@@ -1,17 +1,29 @@
 class game:
-  def __init__(self, is_game, player_amount, ):
-    
+  def __init__(self, player_amount, is_game=True):
+    self.player_amount = player_amount
+    self.is_game = is_game
+
+  def setup(self):
+    players = [
+          
+    ]
     pass
 
   def ask(self, question):
     answer = input(question)
     if answer == "exit":
       self.is_game = False
+    return answer
+  
+  
 
-
+SevenGame = game(4)
 
 def main():
-  is_game = True 
-  while is_game:
+  
+  while SevenGame.is_game:
+    
+    SevenGame.ask("Hej?")
 
-# Hej och hå!
+
+main()
