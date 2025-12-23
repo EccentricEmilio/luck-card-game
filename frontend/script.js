@@ -1,6 +1,6 @@
 console.log("script.js loaded");
 
-document.getElementById("deal").addEventListener("click", async () => {
+document.getElementById("start-game-btn").addEventListener("click", async () => {
     const response = await fetch("http://127.0.0.1:8000/ai-move", {
         method: "POST",
         headers: {
@@ -38,3 +38,7 @@ function renderHands(newHands) {
         });
     }
 }
+
+
+
+
