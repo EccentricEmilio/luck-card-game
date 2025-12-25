@@ -34,6 +34,14 @@ POKER_RANKS = {
     }
 }
 
+ERROR_MESSAGES = {
+            "no_cards": "No cards chosen.",
+            "invalid_card": "Invalid card chosen.",
+            "duplicate_cards": "Duplicate cards chosen.",
+            "different_values": "All chosen cards must be of the same value.",
+            "mismatched_count": "You must play the same number of cards as player-1."
+        }
+
 '''
 self.board = {
             "round_1" : round_1
@@ -59,6 +67,7 @@ class GameState:
         self.active_player = "player-1"
         self.player_count = player_count
         self.board = {}
+        self.current_round = {}
         self.deck = pydealer.Deck()
         self.deck.shuffle()
 
@@ -69,22 +78,71 @@ class GameState:
             self.players.append("player-" + str(i))
 
     def deal_initial_hands(self):
-      for i in range(1, self.player_count + 1):
-        card_stack = self.deck.deal(self.TOTAL_CARDS_PER_HAND)
-        cards = [c.abbreviate() for c in card_stack]
-        self.players_hands["player-" + str(i)] = cards
-      
-      self.determine_main_player()
-
-    def process_turn(self):
+        for i in range(1, self.player_count + 1):
+            card_stack = self.deck.deal(self.TOTAL_CARDS_PER_HAND)
+            cards = [c.abbreviate() for c in card_stack]
+            self.players_hands["player-" + str(i)] = cards
+        self.determine_main_player()
         
-        pass
-    
+    def process_turn(self):
+        self.turn_index += 1
+        self.current_round = {}
+        for p in self.players:
+            print(p + "'s turn.")
+            prompt = self.prompt_player(p)
+            self.current_round[p] = prompt
+            print(self.currrent_round)
+                
+        
+        
+        '''
+        turn_active = True
+        while turn_active:
+            print("It's " + self.active_player + "'s turn.")
+            self.active_player = self.players[self.players.index(self.active_player) + 1]
+            print("Next up: " + self.active_player)
+            
+            
+            
+            
+            if self.players[-1] ==  self.active_player:
+                turn_active = False
+        '''
+            
+
     def prompt_player(self, player):
-        print("Choose which cards to play.")
-        self.print_hand("This is your hand: ", self.show_hand(player))
+        self.print_hand("This is your hand:", self.show_hand(player))
         chosen_cards = input("Choose which cards to play: ")
         chosen_cards = chosen_cards.split()
+        
+        invalid_input = False
+        error_flags = {
+            "no_cards": True if len(chosen_cards) == 0 else False,
+            "invalid_card": True if any(c not in self.show_hand(player) for c in chosen_cards) else False,
+            "duplicate_cards": False,
+            "different_values": False,
+            "mismatched_count": False
+        }
+        
+        for key in error_flags.keys():
+            if len(chosen_cards) != len(set(chosen_cards)):
+                print("Duplicate cards chosen.")
+                invalid_input = True
+
+            if len(chosen_cards) != 1:
+                chosen_values = [c[0] for c in chosen_cards]
+                if len(chosen_values) != chosen_values.count(chosen_values[0]):
+                    print("All chosen cards must be of the same value.")
+                    invalid_input = True
+
+            if player != "player-1":
+                if len(chosen_cards) != self.current_round.get("player-1"):
+                    print("You must play the same number of cards as player-1.")
+                    invalid_input = True
+            
+        if invalid_input:
+            return self.prompt_player(player)
+        
         self.print_hand("You have chosen these cards: ", chosen_cards)
         return chosen_cards
 
@@ -101,15 +159,21 @@ class GameState:
 
     def print_game_state(self):
         print("------------------------")
+        print("------------------------")
         print("Turn: " + str(self.turn_index))
         print("Hands:")
 
         
         for player in self.players:
-            message = [str(player), ":"]
+            message = [str(player) + "'s hand:"]
             for card in self.show_hand(player):
                 message.append(card)
             print(" ".join(message))
+        
+        if self.turn_index == 0:
+            print("Main Player: " + str(self.main_player))
+        print("------------------------")
+        print("------------------------")
     
     def return_deck_size(self):
         return len(self.deck)
@@ -120,28 +184,28 @@ class GameState:
 
 
     def determine_main_player(self):
-      winner = None
-      winner_value = -1
-      for p in self.players:
-        hand = self.players_hands.get(p)
-        card = hand[-1]
-        value = card[0]
-        rank_value = POKER_RANKS["values"].get(value)
+        winner = None
+        winner_value = -1
+        for p in self.players:
+            hand = self.players_hands.get(p)
+            card = hand[-1]
+            value = card[0]
+            rank_value = POKER_RANKS["values"].get(value)
 
-        if rank_value >= winner_value:
-           winner = p
-           winner_value = rank_value
-      self.main_player = winner
+            if rank_value >= winner_value:
+               winner = p
+               winner_value = rank_value
+        self.main_player = winner
 
 def game_setup(player_count: int):
     print("Starting game with", player_count, "players")
     game_state = GameState(player_count)
     game_state.deal_initial_hands()
     game_state.print_game_state()
-    print(game_state.main_player + " is the main player this game!")
     return game_state
 
 
 
 if __name__ == "__main__":
    game_state = game_setup(3)
+   game_state.process_turn()
