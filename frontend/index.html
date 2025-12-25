@@ -11,9 +11,26 @@
 </head>
 
 <body>
-  <button id="start-game-btn">
-    Start Game
-  </button>
+  <div class="settings">
+    Settings:
+    <button id="start-game-btn">
+      Start Game
+    </button>
+    <p>Choose how many players:</p>
+
+    <form class="player-selection">
+      <input type="radio" id="player-2" name="players" value="2">
+      <label for="player-2">2 Players</label>
+      <input type="radio" id="player-3" name="players" value="3">
+      <label for="player-3">3 Players</label>
+      <input type="radio" id="player-4" name="players" value="4">
+      <label for="player-4">4 Players</label>
+      <input type="radio" id="player-5" name="players" value="5">
+      <label for="player-5">5 Players</label>
+    </form> 
+
+  </div>
+  
   <div class="game">
     <div class="game-header">
       
@@ -32,48 +49,6 @@
       game main
     </div>
     <div class="hands-container">
-      <div class="hand">
-        <p class="hand-title">Played cards</p>
-        <div class="played-cards">
-          <div class=card>A6</div>
-        </div>
-        <p class="hand-title">Player 1</p>
-        <div class="holding-cards" id="hand-1">
-          <div class="card">A6</div>
-          <div class="card">A6</div>
-          <div class="card">A6</div>
-          <div class="card">A6</div>
-          <div class="card">A6</div>
-        </div>
-      </div>
-      <div class="hand">
-        <p class="hand-title">Played cards</p>
-        <div class="played-cards">
-          <div class=card>A6</div>
-        </div>
-        <p class="hand-title">Player 2</p>
-        <div class="holding-cards" id="hand-2">
-          <div class="card">A6</div>
-          <div class="card">A6</div>
-          <div class="card">A6</div>
-          <div class="card">A6</div>
-          <div class="card">A6</div>
-        </div>
-      </div>
-      <div class="hand">
-        <p class="hand-title">Played cards</p>
-        <div class="played-cards">
-          <div class=card>A6</div>
-        </div>
-        <p class="hand-title">Player 3</p>
-        <div class="holding-cards" id="hand-3">
-          <div class="card">A6</div>
-          <div class="card">A6</div>
-          <div class="card">A6</div>
-          <div class="card">A6</div>
-          <div class="card">A6</div>
-        </div>
-      </div>
     </div>
   </div>
 

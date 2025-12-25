@@ -1,4 +1,4 @@
-from fastapi import FastAPI
+from fastapi import FastAPI, Query, Request
 from fastapi.responses import FileResponse
 from fastapi.staticfiles import StaticFiles
 from fastapi.middleware.cors import CORSMiddleware
@@ -38,18 +38,23 @@ class GameState:
         self.deck.shuffle()
 
         self.players_hands = {} 
+        self.players = []
         for i in range(1, player_count + 1):
             self.players_hands["player-" + str(i)] = []
+            self.players.append("player-" + str(i))
 
     def deal_initial_hands(self):
         for i in range(1, self.player_count + 1):
             card_stack = self.deck.deal(self.TOTAL_CARDS_PER_HAND)
-            card = [c.abbreviate() for c in card_stack]
-            self.players_hands["player-" + str(i)] = card
+            cards = [c.abbreviate() for c in card_stack]
+            self.players_hands["player-" + str(i)] = cards
+    
+    def return_deck_size(self):
+        return len(self.deck)
 
 app = FastAPI()
 app.mount("/static", StaticFiles(directory="../frontend"), name="static")
-'''
+
 # Allow requests from your frontend
 origins = [
     "http://127.0.0.1:5500",  # if you're serving HTML via a separate port
@@ -64,10 +69,25 @@ app.add_middleware(
     allow_methods=["*"],  # allow POST, GET, OPTIONS etc.
     allow_headers=["*"],
 )
-'''
+
 @app.get("/")
 def get_index():
     return FileResponse("../frontend/index.html")
+
+@app.get("/start_game")
+def start_game(request: Request, player_count: int = Query(3, ge=2, le=5)):
+    print("Starting game with", player_count, "players")
+    game_state = GameState(player_count)
+    game_state.deal_initial_hands()
+    return game_state.players_hands
+
+
+
+
+
+
+
+
 
 @app.post("/ai-move")
 def ai_move(state: dict):
