@@ -17,9 +17,9 @@ class GameEngine:
             last_player_index = len(self.state.players) - 1
         
         self.state.active_player_index = self.state.starting_player_index
-        while not self.round_is_over:
+        while not self.state.round_is_over:
             if self.state.active_player_index == last_player_index:
-                self.round_is_over = True
+                self.state.round_is_over = True
             
             active_player = self.state.players[self.state.active_player_index]
             # Use injected callable to prompt player for printing instead of hardcoding terminal print here.
