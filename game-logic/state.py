@@ -8,26 +8,24 @@ class GameState:
         self.turn_index = 0
         self.player_count = CUSTOM_RULES["player_count"]
         self.board = []
+        self.game_is_over = False
+        self.round_is_over = False
         self.current_round = {}
         self.deck = pydealer.Deck() 
         self.deck.shuffle()
 
         self.players = PLAYER_NAMES[0:CUSTOM_RULES["player_count"]]
         self.players_hands = {p: [] for p in self.players} 
-        self.starting_player = None
+        self.starting_player_index = None
+        self.active_player_index = None
 
     def deal_initial_hands(self):
         for hand in self.players_hands.values():
             card_stack = self.deck.deal(self.TOTAL_CARDS_PER_HAND)
             hand.extend(c.abbreviate() for c in card_stack)
+            
+    def debug_set_hands(self, hands: dict):
+        for player, hand in hands.items():
+            self.players_hands[player] = hand
 
-    def return_turn_order(self):
-        order = []
-        n = len(self.players)
-        current = self.starting_player
-    
-        for _ in range(n):
-            order.append(self.players[current])
-            current = (current + 1) % n
-    
-        return order    
+

@@ -1,4 +1,3 @@
-import pydealer
 from constants import *
 from state import GameState
   
@@ -6,9 +5,39 @@ class GameEngine:
     def __init__(self, state: GameState):
         self.state = state
 
-    def process_turn(self):
-        self.turn_index += 1
+    def process_turn(self, prompt_player: callable):
         self.current_round = {}
+        self.round_is_over = False
+        
+        # players = [Abraham, Benjamin, Caleb, Daniel]
+        # index =   [0, 1, 2, 3]
+        
+        last_player_index = self.state.starting_player_index - 1
+        if last_player_index < 0:
+            last_player_index = len(self.state.players) - 1
+        
+        self.state.active_player_index = self.state.starting_player_index
+        while not self.round_is_over:
+            if self.state.active_player_index == last_player_index:
+                self.round_is_over = True
+            
+            active_player = self.state.players[self.state.active_player_index]
+            # Use injected callable to prompt player for printing instead of hardcoding terminal print here.
+            print("It's " + active_player + "'s turn.")
+
+            chosen_cards = prompt_player(active_player, self.state.players_hands[active_player], self.validate_player_input)
+            self.state.current_round[active_player] = chosen_cards
+
+            # Shift active player
+            self.state.active_player_index += 1
+            if self.state.active_player_index >= len(self.state.players):
+                self.state.active_player_index = 0
+                
+            
+        # # Old code below, kept for reference
+        '''
+        self.turn_index += 1
+        
         for p in self.players:
             print(p + "'s turn.")
             prompt = self.prompt_player(p)
@@ -17,7 +46,7 @@ class GameEngine:
                 
         
         
-        '''
+        
         turn_active = True
         while turn_active:
             print("It's " + self.active_player + "'s turn.")
@@ -30,24 +59,11 @@ class GameEngine:
             if self.players[-1] ==  self.active_player:
                 turn_active = False
         '''
-            
 
-    def prompt_player(self, player):
-        self.print_hand("This is your hand:", self.show_hand(player))
-        chosen_cards = input("Choose which cards to play: ")
-        chosen_cards = chosen_cards.split()
-
-        valid, err = self.validate_player_input(player, chosen_cards)
-        if not valid:
-            print(err)
-            return self.prompt_player(player)
-
-        self.print_hand("You have chosen these cards: ", chosen_cards)
-        return chosen_cards
-    
     def validate_player_input(self, player, chosen_cards):
         # normalize
         chosen_cards = [c.upper() for c in chosen_cards]
+        starting_player = self.state.players[self.state.active_player_index]
 
         hand = [c.upper() for c in self.show_hand(player)]
         if len(chosen_cards) == 0:
@@ -56,55 +72,30 @@ class GameEngine:
             return False, ERROR_MESSAGES["invalid_card"]
         if len(chosen_cards) != len(set(chosen_cards)):
             return False, ERROR_MESSAGES["duplicate_cards"]
-        if player != self.main_player:
-            if len(chosen_cards) != len(self.current_round[self.main_player]):
+        if player != starting_player:
+            if len(chosen_cards) != len(self.state.current_round[starting_player]):
                 return False, ERROR_MESSAGES["mismatched_count"]
         
         values = [c[0] for c in chosen_cards]
-        if player == self.main_player:
+        if player == starting_player:
             if len(set(values)) != 1:
                 return False, ERROR_MESSAGES["different_values"]
-        if player != self.main_player:
+        if player != starting_player:
             if CUSTOM_RULES["response_requires_duplicates"]:
-                if chosen_cards.count(values[0]) < self.current_round[self.main_player].count(self.current_round[self.main_player][0]):
+                if chosen_cards.count(values[0]) < self.state.current_round[starting_player].count(self.state.current_round[starting_player][0]):
                     return False, ERROR_MESSAGES["different_values"]
 
         return True, None
 
     def show_hand(self, player_name):
-      hand = self.players_hands[player_name]
+      hand = self.state.players_hands[player_name]
       return hand
-    
-    def print_hand(self, prefix: str, hand: list):
-      message = [prefix]
-      for card in hand:
-          message.append(card)
-      print(" ".join(message))
-        
 
-    def print_game_state(self):
-        print("------------------------")
-        print("------------------------")
-        print("Turn: " + str(self.turn_index))
-        print("Hands:")
-
-        
-        for player in self.players:
-            message = [str(player) + "'s hand:"]
-            for card in self.show_hand(player):
-                message.append(card)
-            print(" ".join(message))
-        
-        if self.turn_index == 0:
-            print("Main Player: " + str(self.main_player))
-        print("------------------------")
-        print("------------------------")
-    
-    def determine_main_player(self):
+    def determine_starting_index(self):
         winner = None
         winner_value = -1
-        for p in self.players:
-            hand = self.players_hands.get(p)
+        for p in self.state.players:
+            hand = self.state.players_hands.get(p)
             card = hand[-1]
             value = card[0]
             rank_value = POKER_RANKS["values"].get(value)
@@ -112,4 +103,6 @@ class GameEngine:
             if rank_value >= winner_value:
                winner = p
                winner_value = rank_value
-        self.main_player = winner
+        winner_index = self.state.players.index(winner)
+        self.state.starting_player_index = winner_index
+        self.state.active_player_index = winner_index
