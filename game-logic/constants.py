@@ -47,7 +47,7 @@ CUSTOM_RULES = {
     # If this is checked, responses must include duplicate cards or all cards must be the players
     # individual lowest cards. For example, if player-1 plays two Queens, player-2 must also play atleast
     # two Queens if they have them, otherwise they must play two of their lowest cards.
-    "response_requires_duplicates": True,
+    "response_requires_duplicates": False,
     # Jokers can be used as wild cards, the act the same as sevens.
     "joker_amount_in_deck": 0,
 }

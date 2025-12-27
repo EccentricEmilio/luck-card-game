@@ -25,8 +25,8 @@ def run_terminal_game():
                         initial_setup=True, starting_player=state.players[state.starting_player_index])
     while not state.game_is_over:
         engine.process_turn(ui.prompt_player)
+        engine.resolve_round() # determine round winner and update state
         ui.print_game_state(state.turn_index, state.players_hands)# process each player's turn
-        #engine.resolve_round() # determine round winner and update state
         #engine.advance_state() # prepare for next round
 
     engine.print_winner()
