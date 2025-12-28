@@ -1,6 +1,5 @@
 import pydealer 
 from constants import *
-pydealer.Card.abbreviate = abbreviate
 
 class GameState:
     def __init__(self):

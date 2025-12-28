@@ -1,9 +1,3 @@
-from engine import GameEngine
-from state import GameState
-import pydealer
-from constants import *
-pydealer.Card.abbreviate = abbreviate
-
 class TerminalUI:
     def __init__(self):
         pass 
@@ -53,12 +47,3 @@ class TerminalUI:
         score = loser_score[1]
         print("Game is over")
         print(loser + " lost, with a score of " + str(score))
-
-# Deprecated function, now handled in main.py
-    def game_setup():
-        game_state = GameState()
-        print("Starting game with", game_state.player_count, "players")
-        game_state.deal_initial_hands()
-        game_state.determine_main_player()
-        game_state.print_game_state()
-        return game_state
