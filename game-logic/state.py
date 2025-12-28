@@ -13,6 +13,7 @@ class GameState:
         self.deck = pydealer.Deck() 
         self.deck.shuffle()
         self.loser_score = None
+        self.ties = None
 
         self.players = PLAYER_NAMES[0:CUSTOM_RULES["player_count"]]
         self.players_hands = {p: [] for p in self.players} 
@@ -27,5 +28,3 @@ class GameState:
     def debug_set_hands(self, hands: dict):
         for player, hand in hands.items():
             self.players_hands[player] = hand
-
-

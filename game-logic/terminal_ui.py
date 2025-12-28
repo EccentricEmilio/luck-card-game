@@ -20,10 +20,10 @@ class TerminalUI:
         print("------------------------")
 
     def print_hand(self, prefix: str, hand: list):
-          message = [prefix]
-          for card in hand:
-              message.append(card)
-          print(" ".join(message))
+        message = [prefix]
+        for card in hand:
+            message.append(card)
+        print(" ".join(message))
 
     def prompt_player(self, player: str, hand: list, validate_player_input: callable):
             print("It's " + player + "'s turn.")
@@ -42,8 +42,12 @@ class TerminalUI:
     def print_starting_player(self, player: str):
         print("The starting player is:", player)
     
-    def print_loser(self, loser_score: tuple):
-        loser = loser_score[0]
-        score = loser_score[1]
-        print("Game is over")
-        print(loser + " lost, with a score of " + str(score))
+    def print_loser(self, loser_score: tuple, ties):
+        if ties == None:
+            loser = loser_score[0]
+            score = loser_score[1]
+            print("Game is over")
+            print(loser + " lost, with a score of " + str(score))
+        elif ties != None:
+            print("It's a tie!")
+            print("These players tied: " + str(ties))

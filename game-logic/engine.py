@@ -9,9 +9,6 @@ class GameEngine:
         self.state.current_round = {}
         self.state.round_is_over = False
         
-        # players = [Abraham, Benjamin, Caleb, Daniel]
-        # index =   [0, 1, 2, 3]
-        
         last_player_index = self.state.starting_player_index - 1
         if last_player_index < 0:
             last_player_index = len(self.state.players) - 1
@@ -40,7 +37,7 @@ class GameEngine:
         chosen_cards = [c.upper() for c in chosen_cards]
         starting_player = self.state.players[self.state.starting_player_index]
         player_hand = self.state.players_hands[player]
-        player_hand_values = sorted([POKER_RANKS["values"][c[0]] for c in player_hand])
+        player_hand_values = sorted([POKER_VALUES[c[0]] for c in player_hand])
         if self.state.active_player_index == self.state.starting_player_index:
             currently_starter = True
         else:
@@ -62,12 +59,12 @@ class GameEngine:
             if len(chosen_cards) != len(self.state.current_round[starting_player]):
                 return False, ERROR_MESSAGES["mismatched_count"]
         
-        values = [POKER_RANKS["values"][c[0]] for c in chosen_cards]
+        values = [POKER_VALUES[c[0]] for c in chosen_cards]
         if currently_starter:
             if len(set(values)) != 1:
                 return False, ERROR_MESSAGES["different_values"]
         if not currently_starter:
-            starting_values = [POKER_RANKS["values"][c[0]] for c in starting_players_cards]
+            starting_values = [POKER_VALUES[c[0]] for c in starting_players_cards]
             if CUSTOM_RULES["response_requires_duplicates"]:
                 if values.count(values[0]) < starting_values.count(starting_values[0]):
                     return False, ERROR_MESSAGES["different_values"]
@@ -102,7 +99,7 @@ class GameEngine:
                 hand = self.state.players_hands.get(p)
                 card = hand[-1]
                 value = card[0]
-                rank_value = POKER_RANKS["values"].get(value)
+                rank_value = POKER_VALUES.get(value)
 
                 if rank_value >= winner_value:
                     winner = p
@@ -113,7 +110,7 @@ class GameEngine:
             for player, cards in self.state.current_round.items():
                 card = cards[-1]
                 value = card[0]
-                rank_value = POKER_RANKS["values"].get(value)
+                rank_value = POKER_VALUES.get(value)
 
                 if rank_value >= winner_value:
                     winner = player
@@ -136,12 +133,22 @@ class GameEngine:
         if self.state.players_hands[self.state.players[0]] == []:
             self.state.game_is_over = True
         
-            highest_score = -1
+            player_scores = []
             for player, cards in self.state.current_round.items():
-                values = [POKER_RANKS["values"][c[0]] for c in cards]
+                values = [POKER_VALUES[c[0]] for c in cards]
                 score = sum(values)
-                if score >= highest_score:
-                    highest_score = score
-                    loser = player
-            self.state.loser_score = (loser, highest_score)
-        
+                player_score = (player, score)
+                player_scores.append(player_score)
+            scores = [ps[1] for ps in player_scores]
+            if scores.count(max(scores)) > 1:
+                ties = []
+                for p, s in player_scores:
+                    if s == max(scores):
+                        ties.append(p)
+                self.state.ties = ties
+            else:
+                highest_score = max(scores)
+                for p, s in player_scores:
+                    if s == highest_score:
+                        loser = p
+                self.state.loser_score = (loser, highest_score)

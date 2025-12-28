@@ -14,22 +14,20 @@ VALUE_MAP = {
     "Ace": "A"
 }
 
-POKER_RANKS = {
-    "values": {
-        "A": 14,
-        "K": 13,
-        "Q": 12,
-        "J": 11,
-        "T": 10,
-        "9": 9,
-        "8": 8,
-        "7": 7,
-        "6": 6,
-        "5": 5,
-        "4": 4,
-        "3": 3,
-        "2": 2,
-    }
+POKER_VALUES = {
+    "A": 14,
+    "K": 13,
+    "Q": 12,
+    "J": 11,
+    "T": 10,
+    "9": 9,
+    "8": 8,
+    "7": 7,
+    "6": 6,
+    "5": 5,
+    "4": 4,
+    "3": 3,
+    "2": 2,
 }
 
 ERROR_MESSAGES = {
@@ -61,6 +59,13 @@ PLAYER_NAMES = [
     "Emil",
     "Fred"
 ]
+
+PLAYERS_HANDS_DEBUG = {
+    "Abraham": ["2H", "2S", "6S", "8H", "KC"],
+    "Benjamin": ["2H", "2S", "6S", "8H", "KC"],
+    #"Caleb": ["2C", "JC", "KD", "KS", "QC"],
+    #"Daniel": ["2S", "5H", "AS", "JD", "QH"]
+}
 
 def abbreviate(self):
     v = VALUE_MAP[self.value]
