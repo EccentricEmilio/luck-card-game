@@ -13,6 +13,7 @@ class GameState:
         self.current_round = {}
         self.deck = pydealer.Deck() 
         self.deck.shuffle()
+        self.loser_score = None
 
         self.players = PLAYER_NAMES[0:CUSTOM_RULES["player_count"]]
         self.players_hands = {p: [] for p in self.players} 

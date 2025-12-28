@@ -16,19 +16,19 @@ VALUE_MAP = {
 
 POKER_RANKS = {
     "values": {
-        "A": 13,
-        "K": 12,
-        "Q": 11,
-        "J": 10,
-        "T": 9,
-        "9": 8,
-        "8": 7,
-        "7": 6,
-        "6": 5,
-        "5": 4,
-        "4": 3,
-        "3": 2,
-        "2": 1,
+        "A": 14,
+        "K": 13,
+        "Q": 12,
+        "J": 11,
+        "T": 10,
+        "9": 9,
+        "8": 8,
+        "7": 7,
+        "6": 6,
+        "5": 5,
+        "4": 4,
+        "3": 3,
+        "2": 2,
     }
 }
 
@@ -37,13 +37,14 @@ ERROR_MESSAGES = {
             "invalid_card": "Invalid card chosen.",
             "duplicate_cards": "Duplicate cards chosen.",
             "different_values": "All chosen cards must be of the same value.",
-            "mismatched_count": "You must play the same number of cards as player-1."
+            "mismatched_count": "You must play the same number of cards as player-1.",
+            "disallowed_value": "Value must either be your lowest available or match starting_player."
         }
 
 CUSTOM_RULES = {
     "cards_per_hand": 5,
     "deck_type": "standard",
-    "player_count": 4,
+    "player_count": 2,
     # If this is checked, responses must include duplicate cards or all cards must be the players
     # individual lowest cards. For example, if player-1 plays two Queens, player-2 must also play atleast
     # two Queens if they have them, otherwise they must play two of their lowest cards.
@@ -65,15 +66,3 @@ def abbreviate(self):
     v = VALUE_MAP[self.value]
     abbreviation = v + self.suit[0]
     return abbreviation   
-
-
-'''
-self.board = {
-            "round_1" : round_1
-        }
-        round_1 =  {
-            "winner" : "player-1",
-            "player-1" : ["A"],
-            "player-2" : ["3"], 
-        }     
-'''

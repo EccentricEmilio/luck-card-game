@@ -15,14 +15,7 @@ class TerminalUI:
         print("------------------------")
         print("Turn: " + str(turn_index))
         print("Hands:")
-
-        ''' Replaced by print_hand method, code below
-        for player, hand in players_hand.items():
-            message = [str(player) + "'s hand:"]
-            for card in sorted(hand):
-                message.append(card)
-            print(" ".join(message))
-        '''
+        
         for player in players:
             self.print_hand(str(player)+ "'s hand:", players_hand[player])
         
@@ -39,6 +32,7 @@ class TerminalUI:
           print(" ".join(message))
 
     def prompt_player(self, player: str, hand: list, validate_player_input: callable):
+            print("It's " + player + "'s turn.")
             self.print_hand("This is your hand:", hand)
             chosen_cards = input("Choose which cards to play: ")
             chosen_cards = chosen_cards.split()
@@ -53,6 +47,12 @@ class TerminalUI:
     
     def print_starting_player(self, player: str):
         print("The starting player is:", player)
+    
+    def print_loser(self, loser_score: tuple):
+        loser = loser_score[0]
+        score = loser_score[1]
+        print("Game is over")
+        print(loser + " lost, with a score of " + str(score))
 
 # Deprecated function, now handled in main.py
     def game_setup():

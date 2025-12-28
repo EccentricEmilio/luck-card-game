@@ -18,7 +18,7 @@ def run_terminal_game():
     ui = TerminalUI()
 
     state.deal_initial_hands()
-    state.debug_set_hands(players_hands_debug)  # For testing purposes
+    #state.debug_set_hands(players_hands_debug)  # For testing purposes
     engine.determine_starting_index()
     # Deck will contain duplicate cards if using debug hands
     ui.print_game_state(state.turn_index, state.players_hands, 
@@ -26,9 +26,10 @@ def run_terminal_game():
     while not state.game_is_over:
         engine.process_turn(ui.prompt_player)
         engine.resolve_round() # determine round winner and update state
-        ui.print_game_state(state.turn_index, state.players_hands)# process each player's turn
-        #engine.advance_state() # prepare for next round
+        ui.print_game_state(state.turn_index, state.players_hands) # process each player's turn
+        engine.advance_state() # Check if game is over
+        print("move on to next turn" + str(state.game_is_over == False))
 
-    engine.print_winner()
+    ui.print_loser(state.loser_score)
 if __name__ == "__main__":
     run_terminal_game()
